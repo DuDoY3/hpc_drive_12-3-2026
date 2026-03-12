@@ -1,0 +1,27 @@
+services:
+  hpc_drive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hpc_drive_service
+    ports:
+      - "7777:7777"
+    volumes:
+      - drive_data:/app/data 
+      - uploads_data:/app/src/hpc_drive/uploads 
+    environment:
+      DATABASE_URL: "sqlite:////app/data/drive.db"
+      AUTH_SERVICE_ME_URL: "http://hpc_web:80/api/v1/me"
+      # THÊM DÒNG DƯỚI ĐÂY ĐỂ CHO PHÉP FRONTEND GỌI API
+      CORS_ALLOWED_ORIGINS: "http://localhost:3001" 
+    networks:
+      - system-management_hpc_network
+    restart: unless-stopped
+
+networks:
+  system-management_hpc_network:
+    external: true
+
+volumes:
+  drive_data: 
+  uploads_data:
